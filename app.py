@@ -94,6 +94,7 @@ class User(UserMixin, db.Model):
     is_banned = db.Column(db.Boolean, default=False)
 
     last_seen = db.Column(db.DateTime, nullable=True)
+    device_id = db.Column(db.String(64), unique=True, nullable=True)
 
 
 class Exchange(db.Model):
@@ -361,6 +362,26 @@ def register():
 
         referral_input = request.form.get("referral_code", "").strip()
 
+        # One account per browser/device.
+        device_id = request.cookies.get("referals_device_id")
+
+        if not device_id:
+            device_id = secrets.token_hex(32)
+
+        if device_id and not (
+            current_user.is_authenticated and current_user.is_admin
+        ):
+            existing_device_user = User.query.filter_by(
+                device_id=device_id
+            ).first()
+
+            if existing_device_user:
+                flash("Account already exists. Please login.", "error")
+                return render_template(
+                    "register.html",
+                    referral_code=referral_input
+                )
+
         # If no form referral code, use ?ref=
         if not referral_input:
             referral_input = referral_from_link
@@ -448,7 +469,8 @@ def register():
             referral_code=generate_referral_code(),
             referred_by=referral_code if referred_user else None,
             referral_balance=10,
-            last_seen=datetime.now(timezone.utc).replace(tzinfo=None)
+            last_seen=datetime.now(timezone.utc).replace(tzinfo=None),
+            device_id=device_id
         )
 
         db.session.add(user)
@@ -462,7 +484,16 @@ def register():
         login_user(user)
 
         flash("Welcome to Referals Exchange!", "success")
-        return redirect(url_for("dashboard"))
+
+        response = redirect(url_for("dashboard"))
+        response.set_cookie(
+            "referals_device_id",
+            device_id,
+            max_age=60 * 60 * 24 * 365 * 5,
+            httponly=True,
+            samesite="Lax"
+        )
+        return response
 
     return render_template(
         "register.html",
