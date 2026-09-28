@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Payment Approvals</title>
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    background:#eef7f2;
+    color:#063f29;
+    padding:20px;
+}
+
+.container{
+    width:min(900px,96%);
+    margin:auto;
+}
+
+h1{
+    margin-bottom:20px;
+}
+
+.card{
+    background:white;
+    border:1px solid #d7e9df;
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:12px;
+}
+
+.info{
+    line-height:1.8;
+}
+
+.status{
+    font-weight:900;
+    color:#087442;
+}
+
+button{
+    border:0;
+    border-radius:10px;
+    padding:11px 15px;
+    margin-right:7px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.approve{
+    background:#087442;
+    color:white;
+}
+
+.reject{
+    background:#f3eaea;
+    color:#9b4545;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Payment approvals</h1>
+
+{% if payments %}
+
+{% for payment in payments %}
+
+<div class="card">
+
+<div class="info">
+
+<strong>
+User ID: {{ payment.user_id }}
+</strong>
+
+<br>
+
+Amount:
+₦{{ payment.amount }}
+
+<br>
+
+Method:
+{{ payment.method }}
+
+<br>
+
+Sender name:
+<strong>{{ payment.sender_name }}</strong>
+
+<br>
+
+Reference:
+<strong>{{ payment.reference }}</strong>
+
+{% if payment.proof_filename %}
+
+<br><br>
+
+<a
+    href="{{ url_for('static', filename='payment_proofs/' + payment.proof_filename) }}"
+    target="_blank"
+>
+    <img
+        src="{{ url_for('static', filename='payment_proofs/' + payment.proof_filename) }}"
+        alt="Payment proof"
+        style="
+            width:100%;
+            max-width:420px;
+            border-radius:14px;
+            border:1px solid #d7e9df;
+            margin-top:8px;
+            display:block;
+        "
+    >
+</a>
+
+{% endif %}
+
+<br>
+
+Submitted:
+{{ payment.submitted_at }}
+
+<br>
+
+Status:
+<span class="status">
+{{ payment.status }}
+</span>
+
+{% if payment.access_expires_at %}
+
+<br>
+
+Access expires:
+{{ payment.access_expires_at }}
+
+{% endif %}
+
+</div>
+
+{% if payment.status == "pending" %}
+
+<br>
+
+<button
+    class="approve"
+    onclick="approvePayment({{ payment.id }})"
+>
+Approve — 3 Days
+</button>
+
+<button
+    class="reject"
+    onclick="rejectPayment({{ payment.id }})"
+>
+Reject
+</button>
+
+{% endif %}
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<div class="card">
+No payment submissions yet.
+</div>
+
+{% endif %}
+
+</div>
+
+
+<script>
+
+async function approvePayment(id){
+
+    const response =
+        await fetch(
+            "/admin/payment/" +
+            id +
+            "/approve",
+            {
+                method:"POST"
+            }
+        );
+
+    const data =
+        await response.json();
+
+    alert(
+        data.message ||
+        "Payment approved."
+    );
+
+    if(data.success){
+        location.reload();
+    }
+}
+
+
+async function rejectPayment(id){
+
+    const response =
+        await fetch(
+            "/admin/payment/" +
+            id +
+            "/reject",
+            {
+                method:"POST"
+            }
+        );
+
+    const data =
+        await response.json();
+
+    alert(
+        data.message ||
+        "Payment rejected."
+    );
+
+    if(data.success){
+        location.reload();
+    }
+}
+
+</script>
+
+</body>
+</html>

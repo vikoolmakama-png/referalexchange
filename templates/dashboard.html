@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard — Referals Exchange</title>
+
+<style>
+:root{
+    --green:#087442;
+    --green-dark:#063b24;
+    --green-deep:#032719;
+    --green-light:#e9f7ef;
+    --green-soft:#f4faf6;
+    --gold:#c9a961;
+    --white:#fff;
+    --text:#14231c;
+    --muted:#78877f;
+    --line:#e5ece8;
+    --shadow:0 15px 45px rgba(3,39,25,.07);
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    background:#f7f9f7;
+    color:var(--text);
+    min-height:100vh;
+}
+
+button,
+a{
+    -webkit-tap-highlight-color:transparent;
+}
+
+.navbar{
+    height:78px;
+    background:rgba(255,255,255,.97);
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 5%;
+    position:sticky;
+    top:0;
+    z-index:50;
+}
+
+.logo{
+    text-decoration:none;
+    color:var(--green-deep);
+    font-size:21px;
+    font-weight:900;
+    letter-spacing:-.7px;
+}
+
+.logo span{
+    color:var(--green);
+}
+
+.nav-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.messages-nav{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:10px 15px;
+    border-radius:10px;
+    background:var(--green-dark);
+    color:white;
+    text-decoration:none;
+    font-size:12px;
+    font-weight:800;
+    transition:.2s;
+}
+
+.messages-nav:hover{
+    background:var(--green);
+    transform:translateY(-1px);
+}
+
+.messages-nav span{
+    min-width:19px;
+    height:19px;
+    padding:0 5px;
+    border-radius:50px;
+    background:#9be1b5;
+    color:var(--green-deep);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+}
+
+.user-pill{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:5px 12px 5px 5px;
+    border:1px solid var(--line);
+    border-radius:50px;
+    background:white;
+    color:var(--green-deep);
+    font-size:12px;
+    font-weight:800;
+}
+
+.mini-avatar{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:var(--green-light);
+    color:var(--green);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:900;
+}
+
+.logout{
+    text-decoration:none;
+    color:#68776f;
+    padding:9px 13px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:white;
+    font-size:12px;
+    font-weight:700;
+}
+
+.container{
+    width:min(1180px,92%);
+    margin:45px auto 80px;
+}
+
+/* HERO */
+
+.hero{
+    background:
+        radial-gradient(circle at 90% 15%,rgba(112,205,148,.17),transparent 30%),
+        linear-gradient(135deg,#032719,#075b35 70%,#087442);
+    color:white;
+    border-radius:28px;
+    padding:40px;
+    position:relative;
+    overflow:hidden;
+    margin-bottom:25px;
+    box-shadow:0 22px 60px rgba(3,58,34,.14);
+}
+
+.hero:before{
+    content:"";
+    position:absolute;
+    width:280px;
+    height:280px;
+    right:-110px;
+    top:-140px;
+    border:1px solid rgba(255,255,255,.13);
+    border-radius:50%;
+}
+
+.hero:after{
+    content:"";
+    position:absolute;
+    width:210px;
+    height:210px;
+    right:-35px;
+    bottom:-150px;
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:50%;
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    max-width:680px;
+}
+
+.eyebrow{
+    color:#a6e2bc;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-size:10px;
+    font-weight:900;
+    margin-bottom:13px;
+}
+
+.hero h1{
+    font-size:clamp(31px,4vw,46px);
+    line-height:1.08;
+    letter-spacing:-1.7px;
+}
+
+.hero h1 span{
+    color:#9be1b5;
+}
+
+.hero p{
+    margin-top:13px;
+    color:#c9ddd1;
+    font-size:14px;
+    line-height:1.7;
+    max-width:570px;
+}
+
+.hero-bottom{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:25px;
+}
+
+.online-status{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 13px;
+    border-radius:50px;
+    background:rgba(255,255,255,.09);
+    border:1px solid rgba(255,255,255,.13);
+    font-size:11px;
+    font-weight:800;
+}
+
+.dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#5de38c;
+    box-shadow:0 0 0 4px rgba(93,227,140,.12);
+}
+
+/* STATS */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.stat{
+    background:white;
+    border:1px solid var(--line);
+    border-radius:19px;
+    padding:20px;
+    box-shadow:var(--shadow);
+}
+
+.stat-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.stat-icon{
+    width:39px;
+    height:39px;
+    border-radius:11px;
+    background:var(--green-light);
+    color:var(--green);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:17px;
+}
+
+.stat-label{
+    color:var(--muted);
+    font-size:11px;
+    font-weight:700;
+}
+
+.stat-number{
+    margin-top:15px;
+    font-size:28px;
+    color:var(--green-deep);
+    font-weight:900;
+    letter-spacing:-1px;
+}
+
+/* GRID */
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:1.55fr .75fr;
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.panel{
+    background:white;
+    border:1px solid var(--line);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+}
+
+.panel-header{
+    padding:21px 22px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid #edf1ee;
+}
+
+.panel-title{
+    display:flex;
+    align-items:center;
+    gap:11px;
+}
+
+.panel-icon{
+    width:39px;
+    height:39px;
+    border-radius:11px;
+    background:var(--green-light);
+    color:var(--green);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:17px;
+}
+
+.panel-header h2{
+    color:var(--green-deep);
+    font-size:17px;
+    font-weight:900;
+}
+
+.panel-header p{
+    margin-top:3px;
+    color:var(--muted);
+    font-size:10px;
+}
+
+/* MESSAGES */
+
+.message-list{
+    padding:5px 0;
+}
+
+.message-row{
+    width:100%;
+    padding:16px 21px;
+    border:0;
+    border-bottom:1px solid #f0f3f1;
+    background:white;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-align:left;
+    cursor:pointer;
+    transition:.18s;
+}
+
+.message-row:last-child{
+    border-bottom:0;
+}
+
+.message-row:hover{
+    background:#f8fbf9;
+}
+
+.message-avatar{
+    width:44px;
+    height:44px;
+    flex:0 0 44px;
+    border-radius:13px;
+    background:var(--green-light);
+    color:var(--green);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:900;
+}
+
+.message-info{
+    flex:1;
+    min-width:0;
+}
+
+.message-name{
+    color:var(--green-deep);
+    font-size:13px;
+    font-weight:900;
+}
+
+.message-preview{
+    margin-top:4px;
+    color:var(--muted);
+    font-size:11px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:470px;
+}
+
+.message-time{
+    color:#99a69f;
+    font-size:9px;
+}
+
+.open-chat{
+    color:var(--green);
+    font-size:20px;
+}
+
+.empty-messages{
+    text-align:center;
+    padding:48px 20px;
+}
+
+.empty-messages-icon{
+    width:53px;
+    height:53px;
+    margin:0 auto 12px;
+    border-radius:16px;
+    background:var(--green-light);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:21px;
+}
+
+.empty-messages strong{
+    display:block;
+    color:var(--green-deep);
+    font-size:14px;
+}
+
+.empty-messages span{
+    display:block;
+    margin-top:5px;
+    color:var(--muted);
+    font-size:11px;
+}
+
+/* REFERRAL */
+
+.referral-box{
+    background:
+        radial-gradient(circle at 100% 0%,rgba(166,226,187,.18),transparent 34%),
+        linear-gradient(145deg,#063b24,#087442);
+    color:white;
+    padding:27px;
+    position:relative;
+}
+
+.referral-box h2{
+    font-size:20px;
+    position:relative;
+    z-index:2;
+}
+
+.referral-box p{
+    margin:10px 0 25px;
+    color:#c8dfd1;
+    font-size:12px;
+    line-height:1.7;
+    position:relative;
+    z-index:2;
+}
+
+.referral-button{
+    width:100%;
+    border:0;
+    border-radius:11px;
+    padding:13px;
+    background:#9be1b5;
+    color:var(--green-deep);
+    font-size:12px;
+    font-weight:900;
+    cursor:pointer;
+    transition:.2s;
+    position:relative;
+    z-index:2;
+}
+
+.referral-button:hover{
+    background:white;
+    transform:translateY(-1px);
+}
+
+/* PEOPLE */
+
+.people-panel{
+    margin-top:0;
+}
+
+.people-section{margin-bottom:12px;}
+
+.people{
+    padding:20px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.person{
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    transition:.2s;
+}
+
+.person:hover{
+    border-color:#c6dfcf;
+    box-shadow:0 10px 25px rgba(3,58,34,.06);
+    transform:translateY(-2px);
+}
+
+.avatar{
+    width:43px;
+    height:43px;
+    flex:0 0 43px;
+    border-radius:12px;
+    background:var(--green-light);
+    color:var(--green);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:900;
+}
+
+.person-info{
+    flex:1;
+    min-width:0;
+}
+
+.person-info strong{
+    display:block;
+    color:var(--green-deep);
+    font-size:12px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.person-info small{
+    display:block;
+    color:var(--muted);
+    font-size:9px;
+    margin-top:4px;
+}
+
+.chat-btn{
+    border:0;
+    background:var(--green);
+    color:white;
+    border-radius:9px;
+    padding:8px 11px;
+    cursor:pointer;
+    font-size:10px;
+    font-weight:900;
+}
+
+.chat-btn:hover{
+    background:var(--green-dark);
+}
+
+.empty{
+    text-align:center;
+    padding:55px 20px;
+}
+
+.empty-icon{
+    width:58px;
+    height:58px;
+    margin:0 auto 13px;
+    border-radius:17px;
+    background:var(--green-light);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--green);
+    font-size:23px;
+}
+
+.empty h3{
+    color:var(--green-deep);
+    font-size:16px;
+}
+
+.empty p{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:11px;
+}
+
+/* MODAL */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(3,39,25,.58);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:100;
+    backdrop-filter:blur(6px);
+}
+
+.modal-card{
+    width:min(450px,100%);
+    background:white;
+    border-radius:22px;
+    padding:25px;
+    box-shadow:0 30px 90px rgba(0,0,0,.25);
+}
+
+.modal-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+}
+
+.modal-top h2{
+    color:var(--green-deep);
+    font-size:20px;
+}
+
+.close{
+    width:34px;
+    height:34px;
+    border:0;
+    border-radius:50%;
+    background:#f1f5f2;
+    cursor:pointer;
+    font-size:18px;
+    color:#61756b;
+}
+
+.modal-card p{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.6;
+    margin-bottom:14px;
+}
+
+.referral-code{
+    background:var(--green-soft);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px;
+    color:var(--green-deep);
+    font-size:11px;
+    word-break:break-all;
+    margin-bottom:12px;
+}
+
+.modal-copy{
+    width:100%;
+    border:0;
+    background:var(--green);
+    color:white;
+    padding:13px;
+    border-radius:11px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.toast{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    background:var(--green-deep);
+    color:white;
+    padding:12px 17px;
+    border-radius:10px;
+    display:none;
+    font-size:12px;
+    z-index:200;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+    .dashboard-grid{
+        grid-template-columns:1fr;
+    }
+
+    .people{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:680px){
+    .navbar{
+        padding:0 4%;
+    }
+
+    .user-pill{
+        display:none;
+    }
+
+    .container{
+        width:94%;
+        margin-top:25px;
+    }
+
+    .hero{
+        padding:28px 23px;
+        border-radius:22px;
+    }
+
+    .hero h1{
+        font-size:31px;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .people{
+        grid-template-columns:1fr;
+        padding:15px;
+    }
+
+    .messages-nav{
+        padding:9px 11px;
+    }
+
+    .logout{
+        padding:9px 10px;
+    }
+}
+
+@media(max-width:450px){
+    .logo{
+        font-size:18px;
+    }
+
+    .messages-nav{
+        display:inline-flex;
+        align-items:center;
+        gap:5px;
+        padding:9px 10px;
+        font-size:11px;
+        white-space:nowrap;
+    }
+
+    .messages-nav span{
+        min-width:17px;
+        height:17px;
+        font-size:9px;
+    }
+
+    .hero-bottom{
+        margin-top:20px;
+    }
+}
+
+/* Space between People Online and Invite & Grow */
+.people-panel + .dashboard-grid .referral-box,
+.referral-box {
+    margin-top: 20px !important;
+}
+
+
+.referral-reward{
+    margin:14px 0;
+    padding:12px 14px;
+    border-radius:13px;
+    background:#e9f8f0;
+    border:1px solid #cce9d9;
+    color:#087442;
+    font-size:13px;
+    line-height:1.45;
+}
+
+.referral-reward strong{
+    color:#04552f;
+}
+
+</style>
+
+<style>
+/* PREMIUM GREEN REDESIGN V2 */
+
+:root{
+    --green:#087442;
+    --green-dark:#04552f;
+    --green-deep:#022c1d;
+    --green-bright:#12a05a;
+    --mint:#e9f8f0;
+    --mint-2:#f4fbf7;
+    --gold:#d6b765;
+    --text:#10251b;
+    --muted:#74847b;
+    --line:#dfeae4;
+    --shadow:0 18px 50px rgba(2,44,29,.09);
+}
+
+/* PAGE */
+
+body{
+    background:
+        radial-gradient(circle at 10% 0%,rgba(18,160,90,.08),transparent 28%),
+        radial-gradient(circle at 100% 20%,rgba(8,116,66,.07),transparent 30%),
+        #f6faf7 !important;
+    color:var(--text) !important;
+}
+
+/* NAVBAR */
+
+.navbar{
+    height:82px !important;
+    background:rgba(255,255,255,.96) !important;
+    border-bottom:1px solid rgba(8,116,66,.10) !important;
+    box-shadow:0 5px 25px rgba(2,44,29,.05) !important;
+    backdrop-filter:blur(15px);
+}
+
+.logo{
+    font-size:23px !important;
+    letter-spacing:-1px !important;
+    color:var(--green-deep) !important;
+}
+
+.logo span{
+    color:var(--green-bright) !important;
+}
+
+/* MESSAGES BUTTON */
+
+.messages-nav{
+    background:linear-gradient(135deg,#04552f,#087442) !important;
+    border-radius:13px !important;
+    padding:11px 17px !important;
+    box-shadow:0 7px 18px rgba(4,85,47,.20) !important;
+}
+
+.messages-nav:hover{
+    background:linear-gradient(135deg,#087442,#12a05a) !important;
+}
+
+/* LOGOUT */
+
+.logout{
+    border-radius:13px !important;
+    padding:10px 15px !important;
+    background:white !important;
+    color:var(--green-dark) !important;
+    border-color:#dce9e2 !important;
+}
+
+/* MAIN */
+
+.container{
+    width:min(1120px,94%) !important;
+    margin:30px auto 70px !important;
+}
+
+/* HERO */
+
+.hero{
+    position:relative;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 90% 10%,rgba(139,235,179,.25),transparent 30%),
+        linear-gradient(135deg,#043d26,#087442 60%,#0b8b4d) !important;
+    border-radius:28px !important;
+    padding:42px !important;
+    box-shadow:0 22px 55px rgba(2,44,29,.17) !important;
+    color:white !important;
+}
+
+.hero:after{
+    content:"";
+    position:absolute;
+    width:220px;
+    height:220px;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:50%;
+    right:-80px;
+    bottom:-100px;
+}
+
+.hero h1{
+    color:white !important;
+    font-size:42px !important;
+    letter-spacing:-1.5px !important;
+}
+
+.hero h1 span{
+    color:#9be7bb !important;
+}
+
+.hero p{
+    color:rgba(255,255,255,.78) !important;
+    max-width:650px !important;
+    line-height:1.8 !important;
+}
+
+.eyebrow{
+    color:#a9e9c2 !important;
+    letter-spacing:2px !important;
+    font-weight:900 !important;
+}
+
+.online-status{
+    border-radius:50px !important;
+}
+
+/* STATS */
+
+.stats{
+    gap:16px !important;
+    margin-top:18px !important;
+}
+
+.stat{
+    background:rgba(255,255,255,.94) !important;
+    border:1px solid rgba(8,116,66,.10) !important;
+    border-radius:22px !important;
+    padding:25px !important;
+    box-shadow:var(--shadow) !important;
+    transition:.25s ease !important;
+}
+
+.stat:hover{
+    transform:translateY(-3px);
+    box-shadow:0 22px 55px rgba(2,44,29,.13) !important;
+}
+
+.stat-icon{
+    background:var(--mint) !important;
+    color:var(--green) !important;
+    border-radius:15px !important;
+}
+
+.stat-number{
+    color:var(--green-deep) !important;
+    font-weight:900 !important;
+}
+
+.stat-label{
+    color:var(--muted) !important;
+}
+
+/* ALL PANELS */
+
+.panel{
+    background:rgba(255,255,255,.97) !important;
+    border:1px solid rgba(8,116,66,.10) !important;
+    border-radius:26px !important;
+    box-shadow:var(--shadow) !important;
+    overflow:hidden !important;
+}
+
+/* PEOPLE ONLINE */
+
+.people-panel{
+    margin-top:20px !important;
+}
+
+.people-panel .panel-header{
+    padding:26px !important;
+    background:linear-gradient(180deg,#ffffff,#f8fcfa) !important;
+}
+
+.panel-title h2{
+    color:var(--green-deep) !important;
+    font-size:23px !important;
+    letter-spacing:-.5px !important;
+}
+
+.panel-title p{
+    color:var(--muted) !important;
+    margin-top:5px !important;
+}
+
+.panel-icon{
+    background:var(--mint) !important;
+    border-radius:16px !important;
+}
+
+/* PEOPLE CARDS */
+
+.person{
+    border:1px solid #e2eee7 !important;
+    border-radius:18px !important;
+    background:#fbfefc !important;
+    transition:.25s ease !important;
+}
+
+.person:hover{
+    transform:translateY(-3px);
+    border-color:#b9ddc8 !important;
+    box-shadow:0 12px 30px rgba(2,44,29,.08) !important;
+}
+
+.avatar{
+    background:linear-gradient(135deg,#dff6e9,#bcebd0) !important;
+    color:var(--green-dark) !important;
+}
+
+/* CHAT BUTTON */
+
+.chat-btn{
+    background:linear-gradient(135deg,#087442,#0b9250) !important;
+    border-radius:11px !important;
+    padding:10px 14px !important;
+    box-shadow:0 6px 14px rgba(8,116,66,.15) !important;
+}
+
+/* INVITE & GROW */
+
+.referral-box{
+    margin-top:22px !important;
+    background:
+        radial-gradient(circle at 85% 10%,rgba(156,241,188,.18),transparent 28%),
+        linear-gradient(135deg,#034426,#087442 65%,#0a8d4e) !important;
+    border:none !important;
+    color:white !important;
+    padding:34px !important;
+    border-radius:27px !important;
+    box-shadow:0 20px 50px rgba(2,44,29,.18) !important;
+}
+
+.referral-box h2{
+    color:white !important;
+    font-size:30px !important;
+    letter-spacing:-.8px !important;
+}
+
+.referral-box p{
+    color:rgba(255,255,255,.78) !important;
+    line-height:1.7 !important;
+}
+
+.referral-button{
+    margin-top:18px !important;
+    background:#a4eac0 !important;
+    color:#063b24 !important;
+    border:0 !important;
+    border-radius:14px !important;
+    padding:15px 20px !important;
+    font-weight:900 !important;
+    box-shadow:0 8px 22px rgba(0,0,0,.10) !important;
+    transition:.2s ease !important;
+}
+
+.referral-button:hover{
+    background:#c0f2d3 !important;
+    transform:translateY(-2px);
+}
+
+/* EMPTY PEOPLE STATE */
+
+.empty{
+    padding:70px 20px !important;
+}
+
+.empty-icon{
+    background:var(--mint) !important;
+    color:var(--green) !important;
+    border-radius:20px !important;
+}
+
+.empty h3{
+    color:var(--green-deep) !important;
+    font-size:20px !important;
+}
+
+.empty p{
+    color:var(--muted) !important;
+    line-height:1.6 !important;
+}
+
+/* MOBILE */
+
+@media(max-width:680px){
+
+    .navbar{
+        height:74px !important;
+    }
+
+    .logo{
+        font-size:19px !important;
+    }
+
+    .messages-nav{
+        padding:10px 13px !important;
+        font-size:11px !important;
+    }
+
+    .logout{
+        padding:9px 11px !important;
+        font-size:11px !important;
+    }
+
+    .container{
+        width:94% !important;
+        margin-top:20px !important;
+    }
+
+    .hero{
+        padding:29px 23px !important;
+        border-radius:23px !important;
+    }
+
+    .hero h1{
+        font-size:31px !important;
+    }
+
+    .hero p{
+        font-size:13px !important;
+    }
+
+    .stats{
+        gap:12px !important;
+    }
+
+    .stat{
+        border-radius:21px !important;
+        padding:22px !important;
+    }
+
+    .panel{
+        border-radius:23px !important;
+    }
+
+    .people-panel .panel-header{
+        padding:22px !important;
+    }
+
+    .panel-title h2{
+        font-size:20px !important;
+    }
+
+    .referral-box{
+        margin-top:22px !important;
+        padding:29px 24px !important;
+        border-radius:24px !important;
+    }
+
+    .referral-box h2{
+        font-size:27px !important;
+    }
+
+    .referral-button{
+        width:100% !important;
+        padding:16px !important;
+    }
+}
+</style>
+
+
+<style>
+/* FINAL VISIBLE GREEN POLISH */
+
+body{
+    background:#f1f8f4 !important;
+}
+
+/* WHITE STAT CARDS WITH GREEN ACCENTS */
+
+.stat{
+    position:relative !important;
+    background:#ffffff !important;
+    border:1px solid #d8ebe0 !important;
+    border-left:5px solid #087442 !important;
+    box-shadow:0 12px 32px rgba(4,85,47,.10) !important;
+}
+
+.stat-icon{
+    background:#e3f6eb !important;
+    color:#087442 !important;
+    border:1px solid #c9ead7 !important;
+}
+
+.stat-number{
+    color:#034426 !important;
+}
+
+.stat-label{
+    color:#60766b !important;
+}
+
+/* PEOPLE ONLINE CARD */
+
+.panel{
+    border:1px solid #d6e9df !important;
+    box-shadow:0 14px 38px rgba(4,85,47,.10) !important;
+    background:#ffffff !important;
+}
+
+.panel-header{
+    background:linear-gradient(135deg,#f8fdf9,#eaf8f0) !important;
+    border-bottom:1px solid #dcece3 !important;
+}
+
+.panel-icon{
+    background:#dff5e8 !important;
+    color:#087442 !important;
+    border:1px solid #c7e9d5 !important;
+}
+
+.panel-title h2{
+    color:#034426 !important;
+}
+
+.panel-title p{
+    color:#718279 !important;
+}
+
+/* EMPTY PEOPLE AREA */
+
+.empty,
+.empty-messages{
+    background:#ffffff !important;
+}
+
+.empty-icon,
+.empty-messages-icon{
+    background:#e5f7ec !important;
+    color:#087442 !important;
+    border:1px solid #ccebd8 !important;
+}
+
+.empty h3,
+.empty strong,
+.empty-messages strong{
+    color:#034426 !important;
+}
+
+/* INVITE & GROW */
+
+.referral-box{
+    background:
+        radial-gradient(circle at 90% 10%,rgba(151,241,184,.30),transparent 28%),
+        linear-gradient(135deg,#023b25 0%,#056b3b 50%,#0a8f4f 100%) !important;
+    border:0 !important;
+    box-shadow:0 18px 42px rgba(2,59,37,.22) !important;
+}
+
+.referral-box h2{
+    color:#ffffff !important;
+}
+
+.referral-box p{
+    color:rgba(255,255,255,.82) !important;
+}
+
+.referral-button{
+    background:#a8eac2 !important;
+    color:#034426 !important;
+    border:0 !important;
+    box-shadow:0 8px 20px rgba(0,0,0,.12) !important;
+}
+
+.referral-button:hover{
+    background:#c5f3d6 !important;
+}
+
+/* ONLINE STATUS */
+
+.online-status{
+    background:rgba(255,255,255,.13) !important;
+    border:1px solid rgba(255,255,255,.22) !important;
+    color:#ffffff !important;
+}
+
+/* PEOPLE ONLINE BADGE */
+
+.live-badge,
+.online-badge{
+    background:#e2f7eb !important;
+    color:#087442 !important;
+    border:1px solid #c8ead6 !important;
+}
+
+/* PEOPLE */
+
+.person{
+    background:#f9fdfb !important;
+    border:1px solid #d9ebe1 !important;
+}
+
+.person:hover{
+    background:#f0faf4 !important;
+    border-color:#9fd5b5 !important;
+}
+
+.avatar{
+    background:#dff5e8 !important;
+    color:#087442 !important;
+}
+
+/* ACTION BUTTONS */
+
+.chat-btn{
+    background:linear-gradient(135deg,#056b3b,#0a9552) !important;
+    color:#ffffff !important;
+    border:0 !important;
+    box-shadow:0 6px 16px rgba(5,107,59,.20) !important;
+}
+
+/* MOBILE SPACING */
+
+@media(max-width:680px){
+    .stat{
+        border-left-width:4px !important;
+    }
+
+    .referral-box{
+        margin-top:20px !important;
+    }
+}
+
+/* FINAL VISIBLE GREEN POLISH */
+</style>
+
+
+<style>
+/* REAL-TIME DASHBOARD COUNTERS */
+
+.real-stats{
+    display:grid !important;
+    grid-template-columns:repeat(3,1fr) !important;
+    gap:14px !important;
+}
+
+.real-stats .stat{
+    min-width:0;
+}
+
+.request-nav{
+    position:relative;
+}
+
+@media(max-width:680px){
+    .real-stats{
+        grid-template-columns:repeat(3,1fr) !important;
+        gap:8px !important;
+    }
+
+    .real-stats .stat{
+        padding:15px 9px !important;
+        border-radius:17px !important;
+    }
+
+    .real-stats .stat-number{
+        font-size:25px !important;
+    }
+
+    .real-stats .stat-label{
+        font-size:8px !important;
+        line-height:1.25 !important;
+    }
+
+    .real-stats .stat-icon{
+        width:30px !important;
+        height:30px !important;
+        font-size:12px !important;
+    }
+
+    .real-stats .stat-top{
+        gap:4px !important;
+    }
+
+    .request-nav{
+        padding-left:9px !important;
+        padding-right:9px !important;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <a class="logo" href="{{ url_for('dashboard') }}">
+        Referals <span>Exchange</span>
+    </a>
+
+    <div class="nav-right">
+
+        <a href="{{ url_for('messages') }}" class="messages-nav">
+            💬 Messages
+            {% if unread_messages_count > 0 %}
+                <span>{{ unread_messages_count }}</span>
+            {% endif %}
+        </a>
+<div class="user-pill">
+            <div class="mini-avatar">
+                {{ current_user.full_name[0]|upper }}
+            </div>
+            {{ current_user.username }}
+        </div>
+
+        <a href="{{ url_for('logout') }}" class="logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main class="container">
+
+    <!-- PREMIUM HERO -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="eyebrow">
+                REFERALS EXCHANGE
+            </div>
+
+            <h1>
+                Welcome back,
+                <span>{{ current_user.full_name.split(' ')[0] }}</span> 👋
+            </h1>
+
+            <p>
+                Connect with active members, exchange referrals privately,
+                and grow your network one trusted connection at a time.
+            </p>
+
+            <div class="hero-bottom">
+
+                <div class="online-status">
+                    <span class="dot"></span>
+                    You're online
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- LIVE DASHBOARD STATS -->
+
+    <section class="stats real-stats">
+
+        <div class="stat">
+            <div class="stat-top">
+                <div class="stat-icon">✓</div>
+                <div class="stat-label">COMPLETED</div>
+            </div>
+
+            <div class="stat-number">
+                {{ completed_exchanges }}
+            </div>
+
+            <div class="stat-label">
+                Referral exchanges
+            </div>
+        </div>
+
+
+        <div class="stat">
+            <div class="stat-top">
+                <div class="stat-icon">●</div>
+                <div class="stat-label">ACTIVE</div>
+            </div>
+
+            <div class="stat-number" id="activeCount">
+                {{ active_users|length }}
+            </div>
+
+            <div class="stat-label">
+                People active
+            </div>
+        </div>
+
+
+        <div class="stat">
+            <div class="stat-top">
+                <div class="stat-icon">↗</div>
+                <div class="stat-label">NEW</div>
+            </div>
+
+            <div class="stat-number">
+                {{ pending_requests_count }}
+            </div>
+
+            <div class="stat-label">
+                Referral requests
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- PEOPLE ONLINE -->
+
+    <section class="panel people-panel">
+
+        <div class="panel-header">
+
+            <div class="panel-title">
+
+                <div class="panel-icon">👥</div>
+
+                <div>
+                    <h2>People online</h2>
+                    <p>Find someone to exchange referrals with</p>
+                </div>
+
+            </div>
+
+            <div class="online-status"
+                 style="background:#f0f8f3;color:#087442;border-color:#dcece2;">
+                <span class="dot"></span>
+                Live now
+            </div>
+
+        </div>
+
+
+        {% if active_users %}
+
+        <div class="people">
+
+            {% for person in active_users %}
+
+            <div class="person">
+
+                <div class="avatar">
+                    {{ person.full_name[0]|upper }}
+                </div>
+
+                <div class="person-info">
+
+                    <strong>
+                        {{ person.full_name }}
+                    </strong>
+
+                    <small>
+                        <span class="dot"
+                              style="display:inline-block;width:6px;height:6px;box-shadow:none;"></span>
+                        @{{ person.username }}
+                    </small>
+
+                </div>
+
+                <button
+                    class="chat-btn"
+                    onclick="startExchange({{ person.id }})"
+                >
+                    DM
+                </button>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty">
+
+            <div class="empty-icon">
+                ✦
+            </div>
+
+            <h3>Waiting for other members</h3>
+
+            <p>
+                Stay online and people will appear here automatically.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+
+    <!-- MESSAGES + REFERRAL -->
+
+    <section class="dashboard-grid" id="messages">
+
+        <!-- REFERRAL -->
+
+        <div class="panel referral-box">
+
+            <h2>Invite & grow</h2>
+
+            <p>
+                Share your personal referral link with friends
+                and grow your referral network.
+            </p>
+
+            <div class="referral-reward">
+                🎁 Get <strong>4 free referral exchanges</strong>
+                for every person you invite!
+            </div>
+
+            <button
+                class="referral-button"
+                onclick="openReferral()"
+            >
+                🔗 &nbsp; View my referral link
+            </button>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<!-- REFERRAL MODAL -->
+
+<div
+    class="modal"
+    id="referralModal"
+    onclick="closeOutside(event)"
+>
+
+    <div
+        class="modal-card"
+        onclick="event.stopPropagation()"
+    >
+
+        <div class="modal-top">
+
+            <h2>Your referral link</h2>
+
+            <button
+                class="close"
+                onclick="closeReferral()"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <p>
+            Share this link with someone who wants to join
+            Referals Exchange.
+        </p>
+
+        <div
+            class="referral-code"
+            id="referralLink"
+        >
+            {{ request.host_url.rstrip('/') }}{{ url_for('register') }}?ref={{ current_user.referral_code }}
+        </div>
+
+        <button
+            class="modal-copy"
+            onclick="copyReferral()"
+        >
+            Copy referral link
+        </button>
+
+    </div>
+
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.style.display = "block";
+
+    setTimeout(() => {
+        toast.style.display = "none";
+    }, 2500);
+}
+
+
+/* REFERRAL */
+
+function openReferral() {
+
+    document.getElementById(
+        "referralModal"
+    ).style.display = "flex";
+
+}
+
+
+function closeReferral() {
+
+    document.getElementById(
+        "referralModal"
+    ).style.display = "none";
+
+}
+
+
+function closeOutside(event) {
+
+    if (
+        event.target.id === "referralModal"
+    ) {
+        closeReferral();
+    }
+
+}
+
+
+function copyReferral() {
+
+    const link =
+        document.getElementById(
+            "referralLink"
+        ).textContent.trim();
+
+    navigator.clipboard
+        .writeText(link)
+        .then(() => {
+
+            showToast(
+                "Referral link copied!"
+            );
+
+        });
+
+}
+
+
+/* OPEN CHAT */
+
+function openChat(exchangeId) {
+
+    window.location.href =
+        "/exchange/" + exchangeId;
+
+}
+
+
+/* START NEW EXCHANGE */
+
+async function startExchange(userId) {
+
+    try {
+
+        const response =
+            await fetch(
+                "/exchange/start/" + userId,
+                {
+                    method: "POST"
+                }
+            );
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            if (data.payment_required) {
+                window.location.href = "/payment";
+                return;
+            }
+
+            showToast(
+                data.message
+            );
+
+            return;
+        }
+
+
+        if (data.request_pending) {
+            showToast(data.message || "Referral request sent.");
+            setTimeout(() => {
+                window.location.reload();
+            }, 900);
+            return;
+        }
+
+        window.location.href =
+            "/exchange/" +
+            data.exchange_id;
+
+
+    } catch (error) {
+
+        showToast(
+            "Something went wrong. Please try again."
+        );
+
+    }
+
+}
+
+
+/* ONLINE HEARTBEAT */
+
+setInterval(async () => {
+
+    try {
+
+        await fetch(
+            "/heartbeat",
+            {
+                method: "POST"
+            }
+        );
+
+    } catch (error) {}
+
+}, 15000);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Private Exchange - Referals Exchange</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#eef7f2;
+    color:#073b26;
+    min-height:100vh;
+}
+
+/* HEADER */
+
+.topbar{
+    height:76px;
+    background:#ffffff;
+    border-bottom:1px solid #dcebe3;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 22px;
+    position:sticky;
+    top:0;
+    z-index:20;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:900;
+    color:#063f29;
+}
+
+.logo span{
+    color:#0a9653;
+}
+
+.back{
+    text-decoration:none;
+    color:#087442;
+    font-weight:800;
+}
+
+/* MAIN */
+
+.page{
+    width:min(760px,94%);
+    margin:22px auto;
+}
+
+/* USER HEADER */
+
+.exchange-card{
+    background:white;
+    border:1px solid #d7e9df;
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:0 14px 38px rgba(4,85,47,.10);
+}
+
+.user-header{
+    padding:22px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.avatar{
+    width:64px;
+    height:64px;
+    border-radius:20px;
+    background:#dff5e8;
+    color:#087442;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:25px;
+    font-weight:900;
+    flex-shrink:0;
+}
+
+.user-info{
+    flex:1;
+}
+
+.user-info h2{
+    font-size:21px;
+    color:#063f29;
+}
+
+.user-info p{
+    color:#7b8983;
+    margin-top:4px;
+}
+
+.timer-box{
+    text-align:right;
+}
+
+.timer-label{
+    color:#7b8983;
+    font-size:13px;
+    margin-bottom:3px;
+}
+
+.timer{
+    color:#087442;
+    font-size:29px;
+    font-weight:900;
+}
+
+/* NOTICE */
+
+.notice{
+    text-align:center;
+    padding:15px 20px;
+    background:#f5fbf8;
+    border-top:1px solid #e1eee7;
+    border-bottom:1px solid #e1eee7;
+    color:#718079;
+    font-size:14px;
+}
+
+/* CHAT */
+
+.chat-area{
+    height:420px;
+    overflow-y:auto;
+    padding:20px;
+    background:#f8fcfa;
+    display:flex;
+    flex-direction:column;
+    gap:11px;
+}
+
+.empty-chat{
+    margin:auto;
+    text-align:center;
+    color:#82918a;
+}
+
+.empty-chat-icon{
+    width:62px;
+    height:62px;
+    border-radius:20px;
+    background:#e1f5e9;
+    color:#087442;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 12px;
+    font-size:26px;
+}
+
+.empty-chat strong{
+    display:block;
+    color:#174d37;
+    font-size:17px;
+    margin-bottom:5px;
+}
+
+/* MESSAGES */
+
+.message{
+    max-width:78%;
+    padding:11px 14px;
+    border-radius:17px;
+    font-size:15px;
+    line-height:1.45;
+    word-wrap:break-word;
+}
+
+.message.mine{
+    align-self:flex-end;
+    background:#087442;
+    color:white;
+    border-bottom-right-radius:5px;
+}
+
+.message.theirs{
+    align-self:flex-start;
+    background:white;
+    color:#284a3a;
+    border:1px solid #dbeae2;
+    border-bottom-left-radius:5px;
+}
+
+.chat-image{
+    display:block;
+    max-width:260px;
+    max-height:300px;
+    width:auto;
+    height:auto;
+    border-radius:12px;
+    margin-bottom:6px;
+    object-fit:contain;
+}
+
+.image-btn{
+    width:48px;
+    height:48px;
+    border:1px solid #cfe3d8;
+    border-radius:15px;
+    background:#f8fcfa;
+    color:#087442;
+    font-size:21px;
+    cursor:pointer;
+    flex-shrink:0;
+}
+
+.image-btn:active{
+    transform:scale(.97);
+}
+
+.selected-file{
+    display:none;
+    font-size:11px;
+    color:#087442;
+    margin:5px 0 0 4px;
+}
+
+.message-time{
+    display:block;
+    font-size:10px;
+    margin-top:4px;
+    opacity:.65;
+}
+
+/* MESSAGE INPUT */
+
+.composer{
+    background:white;
+    padding:14px;
+    border-top:1px solid #dcebe3;
+    position:sticky;
+    bottom:0;
+    z-index:10;
+}
+
+.message-form{
+    display:flex;
+    gap:9px;
+    align-items:center;
+}
+
+.message-input{
+    flex:1;
+    min-width:0;
+    height:48px;
+    border:1px solid #cfe3d8;
+    border-radius:15px;
+    padding:0 15px;
+    font-size:15px;
+    outline:none;
+    background:#f8fcfa;
+}
+
+.message-input:focus{
+    border-color:#087442;
+    background:white;
+    box-shadow:0 0 0 3px rgba(8,116,66,.08);
+}
+
+.send-btn{
+    height:48px;
+    padding:0 20px;
+    border:0;
+    border-radius:15px;
+    background:linear-gradient(135deg,#056b3b,#0a9653);
+    color:white;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 7px 17px rgba(5,107,59,.20);
+}
+
+.send-btn:active{
+    transform:scale(.97);
+}
+
+/* ACTIONS */
+
+.actions{
+    padding:14px;
+    display:flex;
+    gap:9px;
+    background:white;
+}
+
+.action-btn{
+    flex:1;
+    height:45px;
+    border-radius:13px;
+    border:1px solid #d7e8df;
+    background:#f5faf7;
+    color:#087442;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.complete-btn{
+    background:#087442;
+    color:white;
+    border-color:#087442;
+}
+
+.report-btn{
+    color:#9a4c4c;
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+    .topbar{
+        height:66px;
+        padding:0 15px;
+    }
+
+    .logo{
+        font-size:19px;
+    }
+
+    .back{
+        font-size:13px;
+    }
+
+    .page{
+        width:100%;
+        margin:0;
+    }
+
+    .exchange-card{
+        border-radius:0;
+        border-left:0;
+        border-right:0;
+    }
+
+    .user-header{
+        padding:17px 15px;
+    }
+
+    .avatar{
+        width:53px;
+        height:53px;
+        border-radius:16px;
+    }
+
+    .user-info h2{
+        font-size:18px;
+    }
+
+    .timer{
+        font-size:25px;
+    }
+
+    .chat-area{
+        height:calc(100vh - 300px);
+        min-height:330px;
+        padding:15px;
+    }
+
+    .message{
+        max-width:84%;
+    }
+
+    .composer{
+        padding:10px;
+    }
+
+    .message-input{
+        height:46px;
+        font-size:14px;
+    }
+
+    .send-btn{
+        height:46px;
+        padding:0 16px;
+    }
+
+    .actions{
+        padding:10px;
+    }
+
+    .action-btn{
+        font-size:12px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <div class="logo">
+        Referals <span>Exchange</span>
+    </div>
+
+    <a class="back" href="{{ url_for('dashboard') }}">
+        ← Dashboard
+    </a>
+
+</header>
+
+
+<main class="page">
+
+<div class="exchange-card">
+
+    <!-- USER -->
+
+    <section class="user-header">
+
+        <div class="avatar">
+            {{ other_user.full_name[0]|upper }}
+        </div>
+
+        <div class="user-info">
+            <h2>{{ other_user.full_name }}</h2>
+            <p>@{{ other_user.username }}</p>
+        </div>
+
+        <div class="timer-box">
+
+            <div class="timer-label">
+                Exchange time
+            </div>
+
+            <div
+                class="timer"
+                id="timer"
+            >
+                08:00
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <div class="notice">
+        Private exchange • Messages are deleted when the exchange is completed.
+    </div>
+
+
+    <!-- CHAT -->
+
+    <section
+        class="chat-area"
+        id="chatArea"
+    >
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="
+                    message
+                    {% if message.sender_id == current_user.id %}
+                        mine
+                    {% else %}
+                        theirs
+                    {% endif %}
+                ">
+
+                    {% if message.image_filename %}
+                        <img
+                            src="{{ url_for('static', filename='chat_uploads/' + message.image_filename) }}"
+                            class="chat-image"
+                            alt="Screenshot"
+                            loading="lazy"
+                        >
+                    {% endif %}
+
+                    {% if message.body %}
+                        {{ message.body }}
+                    {% endif %}
+
+                    <span class="message-time">
+                        {{ message.created_at.strftime('%H:%M') }}
+                    </span>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty-chat">
+
+                <div class="empty-chat-icon">
+                    💬
+                </div>
+
+                <strong>
+                    Start your private exchange
+                </strong>
+
+                <span>
+                    Send a message below to begin.
+                </span>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- SEND MESSAGE -->
+
+    <div class="composer">
+
+        <form
+            class="message-form"
+            id="messageForm"
+        >
+
+            <input
+                type="file"
+                id="imageInput"
+                name="image"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                hidden
+            >
+
+            <button
+                type="button"
+                class="image-btn"
+                onclick="document.getElementById('imageInput').click()"
+                title="Send screenshot"
+            >
+                📷
+            </button>
+
+            <input
+                type="text"
+                name="body"
+                id="messageInput"
+                class="message-input"
+                placeholder="Write a message..."
+                maxlength="2000"
+                autocomplete="off"
+            >
+
+            <button
+                type="submit"
+                class="send-btn"
+            >
+                Send
+            </button>
+
+        </form>
+
+        <div
+            id="selectedFile"
+            class="selected-file"
+        ></div>
+
+    </div>
+
+
+    <!-- ACTIONS -->
+
+    <div class="actions">
+
+        <button
+            class="action-btn complete-btn"
+            id="completeBtn"
+            onclick="completeExchange()"
+        >
+            Complete Exchange
+        </button>
+
+        <button
+            class="action-btn report-btn"
+            onclick="reportUser()"
+        >
+            Report User
+        </button>
+
+    </div>
+
+</div>
+
+</main>
+
+
+<script>
+
+let remaining = {{ remaining }};
+
+
+/* TIMER */
+
+let autoCompleting = false;
+
+async function updateTimer(){
+
+    const timer =
+        document.getElementById("timer");
+
+    const minutes =
+        Math.floor(remaining / 60);
+
+    const seconds =
+        remaining % 60;
+
+    timer.textContent =
+        String(minutes).padStart(2,"0")
+        + ":"
+        + String(seconds).padStart(2,"0");
+
+    if(remaining <= 0){
+
+        timer.textContent = "00:00";
+
+        if(!autoCompleting){
+
+            autoCompleting = true;
+
+            try{
+
+                const response =
+                    await fetch(
+                        "{{ url_for('complete_exchange', exchange_id=exchange.id) }}",
+                        {
+                            method:"POST"
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if(data.success){
+
+                    window.location.href =
+                        "{{ url_for('dashboard') }}";
+
+                    return;
+                }
+
+                autoCompleting = false;
+
+            }catch(error){
+
+                autoCompleting = false;
+
+            }
+        }
+
+        return;
+    }
+
+    remaining--;
+}
+
+
+updateTimer();
+
+setInterval(updateTimer,1000);
+
+
+/* SCROLL CHAT */
+
+function scrollChat(){
+
+    const chat =
+        document.getElementById("chatArea");
+
+    chat.scrollTop =
+        chat.scrollHeight;
+
+}
+
+scrollChat();
+
+
+/* SEND MESSAGE */
+
+document
+.getElementById("imageInput")
+.addEventListener("change", function(){
+
+    const selected =
+        document.getElementById("selectedFile");
+
+    if(this.files.length){
+
+        selected.style.display = "block";
+        selected.textContent =
+            "📷 " + this.files[0].name;
+
+    }else{
+
+        selected.style.display = "none";
+        selected.textContent = "";
+
+    }
+
+});
+
+
+document
+.getElementById("messageForm")
+.addEventListener("submit", async function(event){
+
+    event.preventDefault();
+
+    const input =
+        document.getElementById("messageInput");
+
+    const imageInput =
+        document.getElementById("imageInput");
+
+    const body =
+        input.value.trim();
+
+    const hasImage =
+        imageInput.files.length > 0;
+
+    if(!body && !hasImage){
+        return;
+    }
+
+    const form =
+        new FormData();
+
+    form.append("body",body);
+
+    if(hasImage){
+        form.append("image",imageInput.files[0]);
+    }
+
+    try{
+
+        const response =
+            await fetch(
+                "{{ url_for('send_message', exchange_id=exchange.id) }}",
+                {
+                    method:"POST",
+                    body:form
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if(!data.success){
+
+            alert(
+                data.message ||
+                "Unable to send message."
+            );
+
+            return;
+        }
+
+        input.value = "";
+        imageInput.value = "";
+
+        const selected =
+            document.getElementById("selectedFile");
+
+        selected.style.display = "none";
+        selected.textContent = "";
+
+        window.location.reload();
+
+    }catch(error){
+
+        alert(
+            "Unable to send message. Please try again."
+        );
+
+    }
+
+});
+
+
+/* COMPLETE */
+
+async function completeExchange(){
+
+    if(remaining > 0){
+
+        alert(
+            "Please wait until the 8-minute exchange is complete."
+        );
+
+        return;
+    }
+
+    const response =
+        await fetch(
+            "{{ url_for('complete_exchange', exchange_id=exchange.id) }}",
+            {
+                method:"POST"
+            }
+        );
+
+    const data =
+        await response.json();
+
+    if(!data.success){
+
+        alert(
+            data.message ||
+            "Unable to complete exchange."
+        );
+
+        return;
+    }
+
+    window.location.href =
+        "{{ url_for('dashboard') }}";
+
+}
+
+
+/* REPORT */
+
+async function reportUser(){
+
+    const reason =
+        prompt(
+            "Why are you reporting this user?"
+        );
+
+    if(!reason){
+        return;
+    }
+
+    const form =
+        new FormData();
+
+    form.append("reason",reason);
+
+    const response =
+        await fetch(
+            "{{ url_for('report_user', exchange_id=exchange.id) }}",
+            {
+                method:"POST",
+                body:form
+            }
+        );
+
+    const data =
+        await response.json();
+
+    alert(
+        data.message ||
+        "Report submitted."
+    );
+
+}
+
+</script>
+
+</body>
+</html>

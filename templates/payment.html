@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Paid Access - Referals Exchange</title>
+
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --green:#087f4b;
+    --green-dark:#045c36;
+    --green-light:#e8f7ef;
+    --mint:#f3fbf7;
+    --border:#cfe7da;
+    --text:#063d28;
+    --muted:#71827a;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:
+        radial-gradient(circle at top right,#d8f4e5 0,#eefaf4 35%,#f7fcf9 75%);
+    color:var(--text);
+    min-height:100vh;
+}
+
+/* HEADER */
+
+.top{
+    background:linear-gradient(135deg,#045c36,#087f4b,#0aa45f);
+    padding:20px 6%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    box-shadow:0 8px 25px rgba(4,92,54,.18);
+}
+
+.logo{
+    color:white;
+    font-size:22px;
+    font-weight:900;
+    letter-spacing:-.4px;
+}
+
+.logo span{
+    color:#bff2d4;
+}
+
+.back{
+    color:white;
+    text-decoration:none;
+    font-weight:800;
+    padding:10px 15px;
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:12px;
+    background:rgba(255,255,255,.10);
+}
+
+/* PAGE */
+
+.container{
+    width:min(600px,94%);
+    margin:30px auto 50px;
+}
+
+.card{
+    background:rgba(255,255,255,.97);
+    border:1px solid var(--border);
+    border-radius:28px;
+    padding:28px;
+    box-shadow:0 20px 55px rgba(4,92,54,.12);
+}
+
+h1{
+    color:var(--green-dark);
+    font-size:29px;
+    margin-bottom:8px;
+}
+
+.subtitle{
+    color:var(--muted);
+    line-height:1.55;
+    margin-bottom:22px;
+}
+
+/* PRICE */
+
+.price{
+    background:linear-gradient(135deg,#045c36,#087f4b,#0aa45f);
+    color:white;
+    border-radius:22px;
+    padding:25px;
+    margin-bottom:22px;
+    box-shadow:0 12px 28px rgba(8,127,75,.18);
+}
+
+.price strong{
+    display:block;
+    font-size:40px;
+    margin-bottom:4px;
+}
+
+.price span{
+    opacity:.9;
+}
+
+/* BANK DETAILS */
+
+.payment-box{
+    background:var(--mint);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:18px;
+    margin-bottom:20px;
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    padding:13px 4px;
+    border-bottom:1px solid #dceee5;
+}
+
+.row:last-child{
+    border-bottom:0;
+}
+
+.row span:first-child{
+    color:var(--muted);
+}
+
+.row strong{
+    color:var(--green-dark);
+    text-align:right;
+    font-size:15px;
+}
+
+/* NOTICE */
+
+.notice{
+    background:#f0fae8;
+    border:1px solid #d5eecb;
+    color:#536c27;
+    border-radius:17px;
+    padding:16px;
+    margin-bottom:20px;
+    font-size:14px;
+    line-height:1.55;
+}
+
+/* SUCCESS */
+
+.success{
+    background:#e5f8ed;
+    border:1px solid #bde7ce;
+    color:var(--green-dark);
+    padding:17px;
+    border-radius:17px;
+    margin-bottom:18px;
+    line-height:1.55;
+}
+
+/* FLASH */
+
+.flash{
+    background:var(--green-light);
+    border:1px solid var(--border);
+    color:var(--green-dark);
+    padding:13px;
+    border-radius:14px;
+    margin-bottom:15px;
+}
+
+/* FORM */
+
+label{
+    display:block;
+    color:var(--green-dark);
+    font-size:16px;
+    margin-top:18px;
+    margin-bottom:5px;
+}
+
+input[type="text"],
+input[type="file"]{
+    width:100%;
+    min-height:52px;
+    border:1.5px solid #c9e1d5;
+    border-radius:15px;
+    padding:0 15px;
+    font-size:15px;
+    background:#fbfefc;
+    color:var(--text);
+    outline:none;
+}
+
+input[type="text"]:focus{
+    border-color:var(--green);
+    box-shadow:0 0 0 4px rgba(8,127,75,.09);
+    background:white;
+}
+
+input[type="file"]{
+    padding:10px;
+    cursor:pointer;
+}
+
+input::placeholder{
+    color:#98a59f;
+}
+
+/* HELP TEXT */
+
+p[style]{
+    color:var(--muted)!important;
+    font-size:12px!important;
+    line-height:1.5!important;
+    margin:7px 2px 14px!important;
+}
+
+/* BUTTON */
+
+button{
+    width:100%;
+    min-height:54px;
+    margin-top:20px;
+    border:0;
+    border-radius:16px;
+    background:linear-gradient(135deg,#056b3b,#087f4b,#0aa45f);
+    color:white;
+    font-size:16px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 10px 22px rgba(8,127,75,.20);
+}
+
+button:active{
+    transform:scale(.985);
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+    .top{
+        padding:17px 15px;
+    }
+
+    .logo{
+        font-size:19px;
+    }
+
+    .back{
+        font-size:13px;
+        padding:8px 11px;
+    }
+
+    .container{
+        width:100%;
+        margin:0;
+    }
+
+    .card{
+        border-radius:0;
+        border-left:0;
+        border-right:0;
+        padding:22px 15px 30px;
+        min-height:calc(100vh - 70px);
+    }
+
+    h1{
+        font-size:25px;
+    }
+
+    .price{
+        padding:21px;
+        border-radius:19px;
+    }
+
+    .price strong{
+        font-size:35px;
+    }
+
+    .payment-box{
+        padding:15px;
+        border-radius:18px;
+    }
+
+    .row{
+        gap:12px;
+        padding:12px 2px;
+    }
+
+    .row strong{
+        max-width:58%;
+    }
+
+    .notice{
+        font-size:13px;
+        padding:14px;
+    }
+
+    input[type="text"],
+    input[type="file"]{
+        min-height:52px;
+    }
+
+    button{
+        min-height:54px;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<header class="top">
+
+<div class="logo">
+    Referals <span>Exchange</span>
+</div>
+
+<a class="back"
+   href="{{ url_for('dashboard') }}">
+    ← Dashboard
+</a>
+
+</header>
+
+<main class="container">
+
+<div class="card">
+
+<h1>Continue exchanging</h1>
+
+<p class="subtitle">
+Your free referral exchanges have finished.
+Get 3 days of referral exchange access.
+</p>
+
+{% with messages =
+get_flashed_messages(with_categories=true) %}
+
+{% for category,message in messages %}
+
+<div class="flash">
+    {{ message }}
+</div>
+
+{% endfor %}
+
+{% endwith %}
+
+
+{% if active_payment %}
+
+<div class="success">
+
+<strong>Paid access is active.</strong><br>
+
+Your access expires on
+{{ active_payment.access_expires_at.strftime('%d %b %Y, %H:%M') }}.
+
+</div>
+
+{% elif pending_payment %}
+
+<div class="notice">
+
+Your payment is currently waiting for admin approval.
+
+Reference:
+<strong>{{ pending_payment.reference }}</strong>
+
+</div>
+
+{% else %}
+
+<div class="price">
+
+<strong>₦200</strong>
+<span>3 days of referral exchange access</span>
+
+</div>
+
+
+<div class="payment-box">
+
+<div class="row">
+<span>Payment method</span>
+<strong>Bank Transfer</strong>
+</div>
+
+<div class="row">
+<span>Account number</span>
+<strong>8131602092</strong>
+</div>
+
+<div class="row">
+<span>Account name</span>
+<strong>Elisha Makama Kamina</strong>
+</div>
+
+</div>
+
+
+<div class="notice">
+
+After making the ₦200 bank payment, enter your
+bank payment reference below.
+
+Your 3-day access begins only after
+admin approval.
+
+</div>
+
+
+<form method="POST" enctype="multipart/form-data">
+
+<label>
+<strong>Sender name</strong>
+</label>
+
+<input
+    type="text"
+    name="sender_name"
+    placeholder="Name used for the bank payment"
+    required
+    maxlength="160"
+>
+
+<label>
+<strong>Payment screenshot</strong>
+</label>
+
+<input
+    type="file"
+    name="proof"
+    accept="image/jpeg,image/png,image/webp"
+    required
+>
+
+<p style="
+    color:#74847b;
+    font-size:12px;
+    margin:-3px 0 14px;
+    line-height:1.5;
+">
+Upload a clear screenshot showing the ₦200 transaction.
+Maximum file size: 5MB.
+</p>
+
+
+<label>
+<strong>Bank used to send money</strong>
+</label>
+
+<input
+    type="text"
+    name="reference"
+    placeholder="Enter the bank used to send the money"
+    required
+    maxlength="120"
+>
+
+<button type="submit">
+Submit payment for approval
+</button>
+
+</form>
+
+{% endif %}
+
+</div>
+
+</main>
+
+</body>
+</html>

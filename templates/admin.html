@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin • Referals Exchange</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:Inter,Arial,sans-serif;
+    background:#f5f7f6;
+    color:#17251e;
+}
+.topbar{
+    background:linear-gradient(135deg,#062e22,#0d4b38);
+    color:#fff;
+    padding:18px 22px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:20;
+    box-shadow:0 5px 25px rgba(0,0,0,.14);
+}
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:20px;
+    font-weight:800;
+}
+.logo{
+    width:38px;
+    height:38px;
+    border-radius:12px;
+    background:rgba(255,255,255,.14);
+    display:grid;
+    place-items:center;
+    font-size:19px;
+}
+.admin-pill{
+    padding:8px 12px;
+    border-radius:30px;
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.15);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.8px;
+}
+.container{
+    max-width:1250px;
+    margin:auto;
+    padding:30px 18px 60px;
+}
+.hero{
+    margin-bottom:25px;
+}
+.hero h1{
+    margin:0;
+    font-size:30px;
+    letter-spacing:-.7px;
+}
+.hero p{
+    margin:7px 0 0;
+    color:#718078;
+    font-size:14px;
+}
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+    margin-bottom:24px;
+}
+.stat{
+    background:#fff;
+    border:1px solid #e8eeeb;
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 8px 28px rgba(17,45,34,.055);
+    position:relative;
+    overflow:hidden;
+}
+.stat:after{
+    content:"";
+    position:absolute;
+    right:-25px;
+    bottom:-35px;
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:#e9f5ef;
+}
+.stat-icon{
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    background:#eaf6f0;
+    display:grid;
+    place-items:center;
+    font-size:19px;
+    margin-bottom:14px;
+}
+.stat-number{
+    font-size:30px;
+    font-weight:800;
+    color:#0a4a36;
+    position:relative;
+    z-index:1;
+}
+.stat-label{
+    margin-top:4px;
+    color:#758078;
+    font-size:13px;
+    position:relative;
+    z-index:1;
+}
+.section{
+    background:#fff;
+    border:1px solid #e8eeeb;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:22px;
+    box-shadow:0 8px 28px rgba(17,45,34,.05);
+}
+.section-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+}
+.section-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.section-icon{
+    width:38px;
+    height:38px;
+    border-radius:11px;
+    background:#edf7f2;
+    display:grid;
+    place-items:center;
+}
+.section h2{
+    margin:0;
+    font-size:18px;
+}
+.section-sub{
+    margin:3px 0 0;
+    color:#89928d;
+    font-size:12px;
+}
+.table-wrap{
+    overflow-x:auto;
+    border:1px solid #edf1ef;
+    border-radius:14px;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:720px;
+}
+th{
+    background:#f8faf9;
+    color:#718078;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.6px;
+    font-weight:700;
+    padding:13px 12px;
+    text-align:left;
+}
+td{
+    padding:14px 12px;
+    border-top:1px solid #edf1ef;
+    font-size:13px;
+    vertical-align:middle;
+}
+tbody tr:hover{
+    background:#fbfdfc;
+}
+.user-name{
+    font-weight:700;
+    color:#203229;
+}
+.user-full{
+    color:#89938d;
+    font-size:11px;
+    margin-top:3px;
+}
+.badge{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    padding:6px 10px;
+    border-radius:30px;
+    font-size:11px;
+    font-weight:700;
+}
+.badge:before{
+    content:"";
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:currentColor;
+}
+.active,.approved{
+    background:#e7f6ed;
+    color:#187342;
+}
+.banned,.rejected{
+    background:#fdeaea;
+    color:#b02c2c;
+}
+.pending{
+    background:#fff4d9;
+    color:#986b08;
+}
+.amount{
+    font-weight:800;
+    color:#0b523b;
+}
+button,.action-btn{
+    border:0;
+    cursor:pointer;
+    border-radius:9px;
+    padding:9px 12px;
+    font-size:12px;
+    font-weight:700;
+    transition:.2s;
+}
+button:hover{
+    transform:translateY(-1px);
+}
+.ban-btn,.reject-btn{
+    background:#fff0f0;
+    color:#b32e2e;
+}
+.unban-btn{
+    background:#eaf7ef;
+    color:#17723f;
+}
+.approve-btn{
+    background:#0b4935;
+    color:white;
+    box-shadow:0 4px 12px rgba(11,73,53,.18);
+}
+.proof{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    color:#0b6045;
+    background:#edf8f3;
+    padding:7px 10px;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:11px;
+    font-weight:700;
+}
+.empty{
+    padding:30px;
+    text-align:center;
+    color:#8a948e;
+    background:#fafcfb;
+    border:1px dashed #dce5e0;
+    border-radius:13px;
+    font-size:13px;
+}
+.payment-actions{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+}
+small{
+    color:#89938d;
+}
+@media(max-width:700px){
+    .topbar{padding:14px 15px}
+    .brand{font-size:17px}
+    .logo{width:34px;height:34px}
+    .admin-pill{font-size:9px;padding:7px 9px}
+    .container{padding:22px 12px 45px}
+    .hero h1{font-size:25px}
+    .stats{
+        grid-template-columns:repeat(3,1fr);
+        gap:8px;
+    }
+    .stat{
+        padding:13px 10px;
+        border-radius:15px;
+    }
+    .stat-icon{
+        width:31px;
+        height:31px;
+        border-radius:9px;
+        font-size:14px;
+        margin-bottom:8px;
+    }
+    .stat-number{font-size:21px}
+    .stat-label{
+        font-size:10px;
+        line-height:1.2;
+    }
+    .section{
+        padding:13px;
+        border-radius:16px;
+    }
+    .section h2{font-size:16px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <div class="brand">
+        <div class="logo">↗</div>
+        <span>Referals Exchange</span>
+    </div>
+    <div class="admin-pill">ADMIN PANEL</div>
+</div>
+
+<div class="container">
+
+    <div class="hero">
+        <h1>Admin Dashboard</h1>
+        <p>Manage your community, payments and reports from one place.</p>
+    </div>
+
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-icon">👥</div>
+            <div class="stat-number">{{ users|length }}</div>
+            <div class="stat-label">Total Users</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-icon">🚫</div>
+            <div class="stat-number">
+                {{ users|selectattr('is_banned','equalto',true)|list|length }}
+            </div>
+            <div class="stat-label">Banned Users</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-icon">🛡</div>
+            <div class="stat-number">{{ reports|length }}</div>
+            <div class="stat-label">Reports</div>
+        </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-title">
+                <div class="section-icon">👥</div>
+                <div>
+                    <h2>Users</h2>
+                    <div class="section-sub">Manage community accounts</div>
+                </div>
+            </div>
+        </div>
+
+        {% if users %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Referrals</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>
+                            <div class="user-name">{{ user.username }}</div>
+                            <div class="user-full">{{ user.full_name }}</div>
+                        </td>
+                        <td>{{ user.email }}</td>
+                        <td><strong>{{ user.referral_balance }}</strong></td>
+                        <td>
+                            {% if user.is_banned %}
+                                <span class="badge banned">Banned</span>
+                            {% else %}
+                                <span class="badge active">Active</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.id != current_user.id %}
+                                {% if user.is_banned %}
+                                <button class="unban-btn"
+                                    onclick="userAction('/admin/user/{{ user.id }}/unban')">
+                                    Unban
+                                </button>
+                                {% else %}
+                                <button class="ban-btn"
+                                    onclick="userAction('/admin/user/{{ user.id }}/ban')">
+                                    Ban
+                                </button>
+                                {% endif %}
+                            {% else %}
+                                <small>Administrator</small>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty">No users found.</div>
+        {% endif %}
+    </div>
+
+    <!-- PAYMENTS -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-title">
+                <div class="section-icon">💳</div>
+                <div>
+                    <h2>Payment Requests</h2>
+                    <div class="section-sub">Review deposits and activate access</div>
+                </div>
+            </div>
+        </div>
+
+        {% if payments %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Sender</th>
+                        <th>Reference</th>
+                        <th>Status</th>
+                        <th>Proof</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for payment in payments %}
+                    <tr>
+                        <td>
+                            {% set payment_user = users|selectattr('id','equalto',payment.user_id)|list|first %}
+                            {% if payment_user %}
+                                <div class="user-name">{{ payment_user.username }}</div>
+                                <div class="user-full">{{ payment_user.email }}</div>
+                            {% else %}
+                                User #{{ payment.user_id }}
+                            {% endif %}
+                        </td>
+
+                        <td class="amount">₦{{ payment.amount }}</td>
+
+                        <td>{{ payment.sender_name or '—' }}</td>
+
+                        <td>{{ payment.reference }}</td>
+
+                        <td>
+                            {% if payment.status == 'pending' %}
+                                <span class="badge pending">Pending</span>
+                            {% elif payment.status == 'approved' %}
+                                <span class="badge approved">Approved</span>
+                            {% else %}
+                                <span class="badge rejected">Rejected</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if payment.proof_filename %}
+                            <a class="proof"
+                               href="{{ url_for('static',filename='payment_proofs/'+payment.proof_filename) }}"
+                               target="_blank">
+                                View Proof
+                            </a>
+                            {% else %}
+                            —
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if payment.status == 'pending' %}
+                            <div class="payment-actions">
+                                <button class="approve-btn"
+                                    onclick="paymentAction('/admin/payment/{{ payment.id }}/approve')">
+                                    Activate 3 Days
+                                </button>
+                                <button class="reject-btn"
+                                    onclick="paymentAction('/admin/payment/{{ payment.id }}/reject')">
+                                    Reject
+                                </button>
+                            </div>
+                            {% else %}
+                            <small>Reviewed</small>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty">No payment requests yet.</div>
+        {% endif %}
+    </div>
+
+    <!-- REPORTS -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-title">
+                <div class="section-icon">🛡</div>
+                <div>
+                    <h2>Reports</h2>
+                    <div class="section-sub">Community reports and moderation</div>
+                </div>
+            </div>
+        </div>
+
+        {% if reports %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Reporter</th>
+                        <th>Reported User</th>
+                        <th>Reason</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for report in reports %}
+                    <tr>
+                        <td>{{ report.reporter_id }}</td>
+                        <td>{{ report.reported_user_id }}</td>
+                        <td>{{ report.reason }}</td>
+                        <td>{{ report.created_at }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty">No reports.</div>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+async function paymentAction(url){
+    if(!confirm("Are you sure you want to perform this payment action?")) return;
+
+    try{
+        const response=await fetch(url,{method:"POST"});
+        const data=await response.json();
+
+        if(data.success){
+            alert(data.message);
+            location.reload();
+        }else{
+            alert(data.message||"Payment action failed.");
+        }
+    }catch(error){
+        alert("Something went wrong.");
+    }
+}
+
+async function userAction(url){
+    if(!confirm("Are you sure you want to perform this action?")) return;
+
+    try{
+        const response=await fetch(url,{method:"POST"});
+        const data=await response.json();
+
+        if(data.success){
+            alert(data.message);
+            location.reload();
+        }else{
+            alert(data.message||"Action failed.");
+        }
+    }catch(error){
+        alert("Something went wrong.");
+    }
+}
+</script>
+
+</body>
+</html>

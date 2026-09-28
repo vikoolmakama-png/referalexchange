@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Messages — Referals Exchange</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Inter, Arial, sans-serif;
+    background: #f4fbf6;
+    color: #10251b;
+    min-height: 100vh;
+}
+
+.navbar {
+    height: 76px;
+    background: white;
+    border-bottom: 1px solid #e1eee6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+}
+
+.logo {
+    color: #063b24;
+    text-decoration: none;
+    font-size: 21px;
+    font-weight: 900;
+}
+
+.logo span {
+    color: #16a765;
+}
+
+.back {
+    text-decoration: none;
+    color: #087442;
+    font-weight: 800;
+    font-size: 13px;
+    padding: 10px 14px;
+    border: 1px solid #dcece2;
+    border-radius: 11px;
+}
+
+.container {
+    width: min(850px, 92%);
+    margin: 35px auto 70px;
+}
+
+.heading {
+    margin-bottom: 22px;
+}
+
+.heading h1 {
+    font-size: 35px;
+    color: #032719;
+}
+
+.heading p {
+    margin-top: 7px;
+    color: #71857b;
+    font-size: 14px;
+}
+
+.panel {
+    background: white;
+    border: 1px solid #e1eee6;
+    border-radius: 23px;
+    overflow: hidden;
+    box-shadow: 0 18px 50px rgba(4,72,39,.07);
+}
+
+.message {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 18px 20px;
+    border: 0;
+    border-bottom: 1px solid #edf3ef;
+    background: white;
+    text-align: left;
+    cursor: pointer;
+    transition: .18s;
+}
+
+.message:hover {
+    background: #f5fcf7;
+}
+
+.avatar {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    border-radius: 15px;
+    background: #e5f7eb;
+    color: #087442;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 900;
+}
+
+.info {
+    flex: 1;
+    min-width: 0;
+}
+
+.name {
+    color: #032719;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.preview {
+    margin-top: 5px;
+    color: #71857b;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.time {
+    color: #91a098;
+    font-size: 10px;
+}
+
+.arrow {
+    color: #087442;
+    font-size: 22px;
+}
+
+.empty {
+    padding: 70px 25px;
+    text-align: center;
+}
+
+.empty-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 18px;
+    border-radius: 20px;
+    background: #e5f7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+.empty h2 {
+    color: #032719;
+    font-size: 20px;
+}
+
+.empty p {
+    margin-top: 8px;
+    color: #71857b;
+    font-size: 13px;
+}
+
+@media(max-width:600px) {
+    .heading h1 {
+        font-size: 29px;
+    }
+
+    .message {
+        padding: 15px;
+    }
+
+    .time {
+        display: none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <a href="{{ url_for('dashboard') }}" class="logo">
+        Referals <span>Exchange</span>
+    </a>
+
+    <a href="{{ url_for('dashboard') }}" class="back">
+        ← Dashboard
+    </a>
+
+</nav>
+
+<main class="container">
+
+    <div class="heading">
+        <h1>Messages 💬</h1>
+        <p>Your active private referral exchanges.</p>
+    </div>
+
+    <div class="panel">
+
+        {% if conversations %}
+
+            {% for item in conversations %}
+
+            <button
+                class="message"
+                onclick="window.location.href='/exchange/{{ item.exchange.id }}'"
+            >
+
+                <div class="avatar">
+                    {{ item.user.full_name[0]|upper }}
+                </div>
+
+                <div class="info">
+
+                    <div class="name">
+                        {{ item.user.full_name }}
+                    </div>
+
+                    <div class="preview">
+
+                        {% if item.last_message %}
+
+                            {% if item.last_message.sender_id == current_user.id %}
+                                You:
+                            {% endif %}
+
+                            {{ item.last_message.body }}
+
+                        {% else %}
+
+                            New private exchange — start chatting
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                {% if item.last_message %}
+                <div class="time">
+                    {{ item.last_message.created_at.strftime('%H:%M') }}
+                </div>
+                {% endif %}
+
+                <div class="arrow">›</div>
+
+            </button>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    💬
+                </div>
+
+                <h2>No messages yet</h2>
+
+                <p>
+                    When someone starts a private referral exchange
+                    with you, the conversation will appear here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</main>
+
+</body>
+</html>

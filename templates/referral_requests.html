@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral Requests - Referals Exchange</title>
+
+    <style>
+        *{
+            box-sizing:border-box;
+            margin:0;
+            padding:0;
+        }
+
+        body{
+            font-family:Arial,sans-serif;
+            background:#f2f8f5;
+            color:#073b26;
+        }
+
+        .top{
+            background:white;
+            border-bottom:1px solid #dcebe3;
+            padding:18px 5%;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+        }
+
+        .logo{
+            color:#034426;
+            font-weight:900;
+            font-size:20px;
+        }
+
+        .logo span{
+            color:#0a9552;
+        }
+
+        .back{
+            text-decoration:none;
+            color:#087442;
+            font-weight:800;
+            font-size:13px;
+        }
+
+        main{
+            width:min(720px,92%);
+            margin:30px auto 70px;
+        }
+
+        .header{
+            margin-bottom:20px;
+        }
+
+        .header h1{
+            font-size:30px;
+            color:#034426;
+        }
+
+        .header p{
+            margin-top:7px;
+            color:#74847b;
+        }
+
+        .card{
+            background:white;
+            border:1px solid #d9ebe1;
+            border-radius:22px;
+            padding:18px;
+            margin-bottom:13px;
+            box-shadow:0 12px 30px rgba(4,85,47,.08);
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+
+        .avatar{
+            width:50px;
+            height:50px;
+            flex:0 0 50px;
+            border-radius:15px;
+            background:#e0f5e8;
+            color:#087442;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:900;
+            font-size:18px;
+        }
+
+        .info{
+            flex:1;
+        }
+
+        .info strong{
+            display:block;
+            color:#034426;
+            font-size:15px;
+        }
+
+        .info small{
+            display:block;
+            margin-top:4px;
+            color:#74847b;
+        }
+
+        .actions{
+            display:flex;
+            gap:7px;
+        }
+
+        button{
+            border:0;
+            border-radius:10px;
+            padding:10px 13px;
+            font-weight:800;
+            cursor:pointer;
+        }
+
+        .accept{
+            background:#087442;
+            color:white;
+        }
+
+        .reject{
+            background:#edf4f0;
+            color:#60736a;
+        }
+
+        .empty{
+            background:white;
+            border:1px solid #d9ebe1;
+            border-radius:22px;
+            padding:55px 20px;
+            text-align:center;
+            color:#74847b;
+        }
+
+        .empty strong{
+            display:block;
+            color:#034426;
+            font-size:18px;
+            margin-bottom:7px;
+        }
+
+        @media(max-width:560px){
+            .card{
+                align-items:flex-start;
+                flex-wrap:wrap;
+            }
+
+            .info{
+                min-width:calc(100% - 70px);
+            }
+
+            .actions{
+                width:100%;
+                margin-left:64px;
+            }
+
+            .actions button{
+                flex:1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="top">
+    <div class="logo">
+        Referals <span>Exchange</span>
+    </div>
+
+    <a class="back" href="{{ url_for('dashboard') }}">
+        ← Dashboard
+    </a>
+</header>
+
+<main>
+
+    <div class="header">
+        <h1>Referral requests</h1>
+        <p>People who want to start a private referral exchange with you.</p>
+    </div>
+
+    {% if requests %}
+
+        {% for item in requests %}
+
+        <div class="card" id="request-{{ item.request.id }}">
+
+            <div class="avatar">
+                {{ item.user.full_name[0]|upper }}
+            </div>
+
+            <div class="info">
+                <strong>{{ item.user.full_name }}</strong>
+                <small>@{{ item.user.username }} wants to exchange referrals with you.</small>
+            </div>
+
+            <div class="actions">
+
+                <button
+                    class="accept"
+                    onclick="acceptRequest({{ item.request.id }})"
+                >
+                    Accept
+                </button>
+
+                <button
+                    class="reject"
+                    onclick="rejectRequest({{ item.request.id }})"
+                >
+                    Decline
+                </button>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+            <strong>No new referral requests</strong>
+            You have no pending exchange requests right now.
+        </div>
+
+    {% endif %}
+
+</main>
+
+<script>
+
+async function acceptRequest(id){
+
+    const response = await fetch(
+        "/referral-request/" + id + "/accept",
+        {method:"POST"}
+    );
+
+    const data = await response.json();
+
+    if(!data.success){
+        alert(data.message || "Unable to accept request.");
+        return;
+    }
+
+    window.location.href =
+        "/exchange/" + data.exchange_id;
+}
+
+
+async function rejectRequest(id){
+
+    const response = await fetch(
+        "/referral-request/" + id + "/reject",
+        {method:"POST"}
+    );
+
+    const data = await response.json();
+
+    if(!data.success){
+        alert(data.message || "Unable to decline request.");
+        return;
+    }
+
+    const card =
+        document.getElementById("request-" + id);
+
+    if(card){
+        card.remove();
+    }
+}
+
+</script>
+
+</body>
+</html>

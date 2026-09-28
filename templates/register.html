@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account • Referals Exchange</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --green: #079447;
+            --green-dark: #056b34;
+            --green-deep: #043d21;
+            --green-light: #e9f8ef;
+            --background: #f3fbf6;
+            --text: #10251a;
+            --muted: #718077;
+            --border: #dfece4;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 10% 0%,
+                    #d9f6e5 0,
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 100% 100%,
+                    #e1f8e9 0,
+                    transparent 30%
+                ),
+                var(--background);
+
+            color: var(--text);
+        }
+
+        nav {
+            height: 76px;
+            padding: 0 6%;
+            background: rgba(255,255,255,.94);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--green-dark);
+            font-size: 19px;
+            font-weight: 850;
+        }
+
+        .logo-icon {
+            width: 37px;
+            height: 37px;
+            border-radius: 12px;
+            background: var(--green);
+            color: white;
+            display: grid;
+            place-items: center;
+            font-weight: 900;
+            box-shadow: 0 8px 20px rgba(7,148,71,.18);
+        }
+
+        .login-top {
+            color: var(--green-dark);
+            font-size: 14px;
+            font-weight: 750;
+            text-decoration: none;
+        }
+
+        main {
+            min-height: calc(100vh - 76px);
+            display: grid;
+            place-items: center;
+            padding: 45px 18px;
+        }
+
+        .card {
+            width: min(100%, 980px);
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: .85fr 1.15fr;
+            box-shadow: 0 30px 80px rgba(0,70,35,.11);
+        }
+
+        .intro {
+            background:
+                radial-gradient(
+                    circle at 100% 0%,
+                    rgba(45,205,112,.18),
+                    transparent 35%
+                ),
+                var(--green-deep);
+
+            color: white;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .intro-badge {
+            width: fit-content;
+            padding: 8px 12px;
+            border-radius: 30px;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.10);
+            color: #8af2b0;
+            font-size: 11px;
+            font-weight: 850;
+            letter-spacing: .5px;
+            margin-bottom: 22px;
+        }
+
+        .intro h1 {
+            font-size: 39px;
+            line-height: 1.05;
+            letter-spacing: -1.7px;
+            margin-bottom: 17px;
+        }
+
+        .intro p {
+            color: #bad5c5;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .features {
+            margin-top: 28px;
+            display: grid;
+            gap: 13px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #dcece3;
+            font-size: 13px;
+        }
+
+        .feature-icon {
+            width: 23px;
+            height: 23px;
+            border-radius: 7px;
+            background: rgba(80,230,143,.13);
+            color: #6af0a0;
+            display: grid;
+            place-items: center;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .form {
+            padding: 48px 45px;
+        }
+
+        .form h2 {
+            font-size: 29px;
+            letter-spacing: -1px;
+            margin-bottom: 7px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .flash {
+            background: #fff1f1;
+            border: 1px solid #ffd3d3;
+            color: #a72c2c;
+            padding: 11px 13px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 13px;
+        }
+
+        .field {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 7px;
+        }
+
+        .optional {
+            color: #89968e;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            border: 1px solid var(--border);
+            background: #fbfdfc;
+            border-radius: 11px;
+            padding: 13px 14px;
+            outline: none;
+            font-size: 14px;
+            color: var(--text);
+            transition: .2s;
+        }
+
+        input::placeholder {
+            color: #a4afa9;
+        }
+
+        input:focus {
+            border-color: var(--green);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(7,148,71,.09);
+        }
+
+        .referral-box {
+            background: var(--green-light);
+            border: 1px solid #d4efdd;
+            border-radius: 14px;
+            padding: 14px;
+            margin: 4px 0 17px;
+        }
+
+        .referral-title {
+            color: var(--green-dark);
+            font-size: 13px;
+            font-weight: 850;
+            margin-bottom: 5px;
+        }
+
+        .referral-text {
+            color: #6e8176;
+            font-size: 11px;
+            line-height: 1.5;
+            margin-bottom: 11px;
+        }
+
+        .submit {
+            width: 100%;
+            border: 0;
+            border-radius: 11px;
+            padding: 14px;
+            background: var(--green);
+            color: white;
+            font-size: 14px;
+            font-weight: 850;
+            cursor: pointer;
+            box-shadow: 0 10px 23px rgba(7,148,71,.18);
+            transition: .2s;
+        }
+
+        .submit:hover {
+            background: var(--green-dark);
+            transform: translateY(-1px);
+        }
+
+        .terms {
+            color: #8a958f;
+            font-size: 11px;
+            line-height: 1.5;
+            text-align: center;
+            margin-top: 14px;
+        }
+
+        .already {
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 20px;
+        }
+
+        .already a {
+            color: var(--green-dark);
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        @media (max-width: 800px) {
+            .card {
+                grid-template-columns: 1fr;
+                max-width: 520px;
+            }
+
+            .intro {
+                padding: 35px;
+            }
+
+            .intro h1 {
+                font-size: 32px;
+            }
+
+            .form {
+                padding: 35px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            nav {
+                padding: 0 5%;
+            }
+
+            .login-top {
+                font-size: 12px;
+            }
+
+            main {
+                padding: 22px 10px;
+            }
+
+            .intro,
+            .form {
+                padding: 28px 22px;
+            }
+
+            .row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+
+    <a href="/" class="logo">
+        <span class="logo-icon">R</span>
+        Referals Exchange
+    </a>
+
+    <a href="/login" class="login-top">
+        Already have an account? Log in
+    </a>
+
+</nav>
+
+
+<main>
+
+    <div class="card">
+
+        <section class="intro">
+
+            <div class="intro-badge">
+                REFERALS EXCHANGE
+            </div>
+
+            <h1>
+                Your referral network starts here.
+            </h1>
+
+            <p>
+                Create your account, connect with active people and
+                exchange referrals through private conversations.
+            </p>
+
+            <div class="features">
+
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    10 free referrals to get started
+                </div>
+
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    Private direct messaging
+                </div>
+
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    8-minute exchange timer
+                </div>
+
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    Earn more through referral rewards
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="form">
+
+            <h2>Create your account</h2>
+
+            <p class="subtitle">
+                Join the Referals Exchange community.
+            </p>
+
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="flash">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+
+            <form method="POST">
+
+                <div class="row">
+
+                    <div class="field">
+                        <label for="full_name">
+                            Full name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="full_name"
+                            name="full_name"
+                            placeholder="Your full name"
+                            required
+                            autocomplete="name"
+                        >
+                    </div>
+
+
+                    <div class="field">
+                        <label for="username">
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Choose username"
+                            minlength="3"
+                            required
+                            autocomplete="username"
+                        >
+                    </div>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="email">
+                        Gmail address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="example@gmail.com"
+                        required
+                        autocomplete="email"
+                        pattern="[A-Za-z0-9._%+-]+@gmail\.com"
+                    >
+
+                </div>
+
+
+                <div class="row">
+
+                    <div class="field">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Create password"
+                            minlength="6"
+                            required
+                            autocomplete="new-password"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="confirm_password">
+                            Confirm password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="confirm_password"
+                            name="confirm_password"
+                            placeholder="Repeat password"
+                            minlength="6"
+                            required
+                            autocomplete="new-password"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="referral-box">
+
+                    <div class="referral-title">
+                        Have a referral link or code?
+                    </div>
+
+                    <div class="referral-text">
+                        Enter the referral code from the person who
+                        invited you. You can leave this empty if you
+                        don't have one.
+                    </div>
+
+                    <input
+                        type="text"
+                        name="referral_code"
+                        placeholder="Example: REF-A1B2C3D4"
+                        maxlength="30"
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="submit"
+                >
+                    Create my account
+                </button>
+
+            </form>
+
+
+            <div class="terms">
+                By creating an account, you agree to use the platform
+                honestly and responsibly.
+            </div>
+
+
+            <div class="already">
+                Already registered?
+                <a href="/login">Log in</a>
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+</body>
+</html>
